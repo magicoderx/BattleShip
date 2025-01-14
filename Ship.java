@@ -1,4 +1,6 @@
-public class Ship{
+import java.io.Serializable;
+
+public class Ship implements Serializable{
     public int height;
     public int width;
     public boolean destroyed;

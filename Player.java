@@ -68,7 +68,7 @@ public class Player implements Serializable {
         return this.name;
     }
 
-    public void getMap(){
-        this.map.print();
+    public Battlefield getMap(){
+        return this.map;
     }
 }

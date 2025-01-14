@@ -6,7 +6,9 @@ public class GameClient{
     public static Room room;
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
-        int nship=5;
+        Battlefield bOwn = new Battlefield();
+        Battlefield bOpponent = new Battlefield();
+
         try {
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
             GameInterface game = (GameInterface) registry.lookup("GameServer");
@@ -41,7 +43,8 @@ public class GameClient{
                         case 1:
                             if(game.getNShip(room.getId(),username)<6){
                                 clearScreen();
-                                game.printMap(room.getId(),username);
+                                printMap(game.getBattlefield(room.getId(),username));
+                                //game.printMap(room.getId(),username);
                                 System.out.println("Insert coordinates for 2x2 ship");
                                 char yCoordChar = scanner.next().charAt(0);
                                 int yCoord = toNumber(yCoordChar);
@@ -55,7 +58,8 @@ public class GameClient{
                         case 2:
                             clearScreen();
                             System.out.println();
-                            game.printMap(room.getId(),username);
+                            printMap(game.getBattlefield(room.getId(),username));
+                            //game.printMap(room.getId(),username);
                             System.out.println();
                             break;
                         case 3:
@@ -70,9 +74,11 @@ public class GameClient{
                         case 1:
                             clearScreen();
                             System.out.println(game.getOpponentUsername(room.getId(),username)+"\n");
-                            game.printMap(room.getId(),game.getOpponentUsername(room.getId(),username));
+                            printMap(game.getBattlefield(room.getId(),game.getOpponentUsername(room.getId(),username)));
+                            //game.printMap(room.getId(),game.getOpponentUsername(room.getId(),username));
                             System.out.println("\n======================================\n"+username+"\n");
-                            game.printMap(room.getId(),username);
+                            printMap(game.getBattlefield(room.getId(),username));
+                            //game.printMap(room.getId(),username);
                             break;
                         case 2:
                             clearScreen();
@@ -146,5 +152,20 @@ public class GameClient{
 
     static int toNumber(char chr) {
         return (chr - 96);
+    }
+
+    static void printMap(Battlefield map){
+        System.out.println("    a  b  c  d  e  f  g  h  i  j");
+        for(int i=0;i<map.height;i++){
+            if(i<9){
+                System.out.print((i+1)+"  ");
+            }else{
+            System.out.print((i+1)+" ");
+            }
+            for(int j=0;j<map.width;j++){
+                System.out.print("[" + map.matrix[i][j] + "]");
+            }
+            System.out.println();
+        }
     }
 }

@@ -1,4 +1,6 @@
-public class Battlefield{
+import java.io.Serializable;
+
+public class Battlefield implements Serializable{
     public int height;
     public int width;
     public String[][] matrix;

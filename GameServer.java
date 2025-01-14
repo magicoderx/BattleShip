@@ -16,6 +16,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
         Player player = new Player(username, 10);
         room.addPlayer(player);
         rooms.put(room.getId(), room);
+        System.out.println("Created room with ID: "+room.getId());
         return room;
     }
 
@@ -27,6 +28,12 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
             room.addPlayer(player);
         }
         return room;
+    }
+
+    @Override
+    public Battlefield getBattlefield(long roomId, String username) throws RemoteException {
+        Room room = rooms.get(roomId);
+        return room.getPlayer(username).getMap();
     }
 
     @Override
@@ -65,7 +72,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public String getOpponentUsername(long roomId, String username) throws RemoteException {
         return "";
     }
-
+/*
     @Override
     public void printMap(long roomId, String username) throws RemoteException {
         Room room = rooms.get(roomId);
@@ -77,7 +84,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
         }
         return;
     }
-
+*/
     @Override
     public String getTurn(long roomId) throws RemoteException {
         Room room = rooms.get(roomId);

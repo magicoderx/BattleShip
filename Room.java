@@ -5,6 +5,7 @@ import java.util.List;
 public class Room implements Serializable {
     private long id;
     private Player[] p;
+    private int len;
     private boolean begin;
     private boolean end;
     private String turn;
@@ -12,6 +13,7 @@ public class Room implements Serializable {
     public Room(long id) {
         this.id = id;
         this.p = new Player[2];
+        this.len = 0;
         this.begin = false;
         this.end = false;
     }
@@ -21,10 +23,12 @@ public class Room implements Serializable {
     }
     
     public void addPlayer(Player player) { 
-        if(this.p.length ==0){
+        if(this.p[0]==null && this.p[1]==null){
             this.p[0]=player;
-        }else if (this.p.length < 2 && this.p.length >0){
+            this.len=1;
+        }else if (this.p[0]!=null && this.p[1]==null){
             this.p[1]=player;
+            this.len=2;
         }else{
             System.out.println("Cannot add player. Game full!");
         }
@@ -52,10 +56,10 @@ public class Room implements Serializable {
     public String getTurn(){
         return this.turn;
     }
-
+    
     public Player getPlayer(String username){
-        for(int i=0;i>this.p.length;i++){
-            if(this.p[i].getName().contains(username)){
+        for(int i=0;i<this.len;i++){
+            if(this.p[i].getName().equals(username)){
                 return this.p[i];
             }
         }
@@ -63,7 +67,7 @@ public class Room implements Serializable {
     }
 
     public Player getOpponent(String username){
-        for(int i=0;i>this.p.length;i++){
+        for(int i=0;i<this.len;i++){
             if(this.p[i].getName().contains(username)){
                 return this.p[i];
             }
