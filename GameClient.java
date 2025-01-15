@@ -44,7 +44,6 @@ public class GameClient{
                             if(game.getNShip(room.getId(),username)<6){
                                 clearScreen();
                                 printMap(game.getBattlefield(room.getId(),username));
-                                //game.printMap(room.getId(),username);
                                 System.out.println("Insert coordinates for 2x2 ship");
                                 char yCoordChar = scanner.next().charAt(0);
                                 int yCoord = toNumber(yCoordChar);
@@ -59,7 +58,6 @@ public class GameClient{
                             clearScreen();
                             System.out.println();
                             printMap(game.getBattlefield(room.getId(),username));
-                            //game.printMap(room.getId(),username);
                             System.out.println();
                             break;
                         case 3:
@@ -75,10 +73,8 @@ public class GameClient{
                             clearScreen();
                             System.out.println(game.getOpponentUsername(room.getId(),username)+"\n");
                             printMap(game.getBattlefield(room.getId(),game.getOpponentUsername(room.getId(),username)));
-                            //game.printMap(room.getId(),game.getOpponentUsername(room.getId(),username));
                             System.out.println("\n======================================\n"+username+"\n");
                             printMap(game.getBattlefield(room.getId(),username));
-                            //game.printMap(room.getId(),username);
                             break;
                         case 2:
                             clearScreen();

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Room implements Serializable {
     private long id;
-    private Player[] p;
+    public Player[] p;
     private int len;
     private boolean begin;
     private boolean end;
@@ -68,11 +68,19 @@ public class Room implements Serializable {
 
     public Player getOpponent(String username){
         for(int i=0;i<this.len;i++){
-            if(this.p[i].getName().contains(username)){
-                return this.p[i];
+            if(this.p[i].getName().equals(username)){
+                if(i==0){
+                    return this.p[i+1];
+                }else{
+                    return this.p[i-1];
+                }
             }
         }
         return null;
+    }
+
+    public int getNPlayers(){
+        return this.len;
     }
     
 }

@@ -3,6 +3,8 @@ import java.io.Serializable;
 public class Ship implements Serializable{
     public int height;
     public int width;
+    public int xCoord;
+    public int yCoord;
     public boolean destroyed;
     public int hits;
 
@@ -11,5 +13,7 @@ public class Ship implements Serializable{
         this.width=width;
         this.destroyed=false;
         this.hits=0;
+        this.xCoord=0;
+        this.yCoord=0;
     }
 }

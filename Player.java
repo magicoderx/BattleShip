@@ -3,6 +3,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
     private String name;
     private Ship[] ships;
+    private int nShip;
     private boolean[][] hits;
     private boolean ready;
     private Battlefield map;
@@ -11,16 +12,11 @@ public class Player implements Serializable {
         this.name = name;
         this.map = new Battlefield();
         this.ships = new Ship[5];
-        this.ships[0]=new Ship(1,1);
-        this.ships[1]=new Ship(1,1);
-        this.ships[2]=new Ship(2,2);
-        this.ships[3]=new Ship(4,1);
-        this.ships[4]=new Ship(2,1);
+        this.nShip=0;
         this.ready = false;
         this.hits = new boolean[gridSize][gridSize];
     }
 
-    // getShips() In questo caso stesso dal client faccio player.map.print();
     public boolean[][] getHits() { return hits; }
 
     public boolean insertShip(int x, int y, Ship ship){
@@ -31,7 +27,11 @@ public class Player implements Serializable {
                         map.matrix[i][j]="X";
                     }
                 }
-                System.out.println("Ship inserted!");
+                System.out.println("Ship inserted by "+this.name+"!");
+                this.ships[nShip]=ship;
+                this.ships[nShip].xCoord=x;
+                this.ships[nShip].yCoord=y;
+                this.nShip++;
                 return true;
             } else {
                 System.out.println("Another ship already placed here");
@@ -41,7 +41,6 @@ public class Player implements Serializable {
             System.out.println("Wrong coordinates! Please enter coordinates from a-j and from 1-10");
             return false;
         }
-        
     }
 
     private boolean checkShipBattlefield(int x, int y, Ship ship){
@@ -66,6 +65,10 @@ public class Player implements Serializable {
 
     public String getName(){
         return this.name;
+    }
+
+    public int getNShips(){
+        return this.nShip;
     }
 
     public Battlefield getMap(){

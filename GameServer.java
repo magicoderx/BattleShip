@@ -17,6 +17,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
         room.addPlayer(player);
         rooms.put(room.getId(), room);
         System.out.println("Created room with ID: "+room.getId());
+        System.out.println(username+" joined game in "+room.getId());
         return room;
     }
 
@@ -24,8 +25,13 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public Room joinRoom(long roomId, String username) throws RemoteException {
         Room room = rooms.get(roomId);
         if (room != null) {
+            if (room.getPlayer(username)!=null){
+                System.out.println(username+" joined game in "+roomId);
+                return room;
+            }
             Player player = new Player(username, 10);
             room.addPlayer(player);
+            System.out.println(username+" joined game in "+roomId);
         }
         return room;
     }
@@ -41,8 +47,11 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
         Room room = rooms.get(roomId);
         if (room != null) {
             Player player = room.getPlayer(username);
-            if (player != null && !room.isGameStarted()) {
+            if (player != null && !room.isGameStarted() && player.getNShips()<2) {
                 player.insertShip(x, y, ship);
+                if(room.getNPlayers() == 2 && room.p[0].getNShips() == 2 && room.p[1].getNShips() == 2){
+                    room.beginRoom();
+                }
             }
         }
     }
@@ -70,21 +79,10 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
 
     @Override
     public String getOpponentUsername(long roomId, String username) throws RemoteException {
-        return "";
-    }
-/*
-    @Override
-    public void printMap(long roomId, String username) throws RemoteException {
         Room room = rooms.get(roomId);
-        if (room != null) {
-            Player player = room.getPlayer(username);
-            if (player != null) {
-                player.getMap();
-            }
-        }
-        return;
+        return room.getOpponent(username).getName();
     }
-*/
+
     @Override
     public String getTurn(long roomId) throws RemoteException {
         Room room = rooms.get(roomId);
