@@ -1,6 +1,7 @@
 import java.io.Serializable;
 
 public class Ship implements Serializable{
+    // Initialize public variables for ship
     public int height;
     public int width;
     public int xCoord;
@@ -8,6 +9,7 @@ public class Ship implements Serializable{
     public boolean destroyed;
     public int hits;
 
+    // Class constructor, initialize ship with height and width
     public Ship(int height, int width){
         this.height=height;
         this.width=width;
