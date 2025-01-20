@@ -13,7 +13,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     @Override
     public Room createRoom(String username) throws RemoteException {
         Room room = new Room(System.currentTimeMillis());
-        Player player = new Player(username, 10);
+        Player player = new Player(username, 10,2);
         room.addPlayer(player);
         rooms.put(room.getId(), room);
         System.out.println("Created room with ID: "+room.getId());
@@ -29,7 +29,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
                 System.out.println(username+" joined game in "+roomId);
                 return room;
             }
-            Player player = new Player(username, 10);
+            Player player = new Player(username, 10,2);
             room.addPlayer(player);
             System.out.println(username+" joined game in "+roomId);
         }
@@ -60,27 +60,37 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public int getNShip(long roomId, String username) throws RemoteException{
         return 0;
     }
-/*
+
     @Override
     public void attack(long roomId, String username, int x, int y) throws RemoteException {
         Room room = rooms.get(roomId);
         if (room != null && room.isGameStarted()) {
-            String currentTurn = room.getTurn();
-            if (currentTurn.equals(username)) {
+            if (room.getTurn().equals(username)) {
                 Player opponent = room.getOpponent(username);
                 if (opponent != null) {
-                    opponent.markHit(x, y);
-                    room.nextTurn();
+                    opponent.markHit(x-1, y-1);
+                    if(opponent.getNShips()==0){
+                        System.out.println("Game over! "+username+" wins!");
+                        room.endRoom();
+                    }else{
+                        if(opponent.hits[x-1][y-1]>0){
+                            return;
+                        }else{
+                            room.nextTurn();
+                        }
+                    }
                 }
+            }else{
+                System.out.println("Not your turn");
             }
         }
     }
-*/
+
 
     @Override
-    public String getOpponentUsername(long roomId, String username) throws RemoteException {
+    public Player getOpponentPlayer(long roomId, String username) throws RemoteException {
         Room room = rooms.get(roomId);
-        return room.getOpponent(username).getName();
+        return room.getOpponent(username);
     }
 
     @Override

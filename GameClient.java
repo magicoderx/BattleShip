@@ -43,7 +43,7 @@ public class GameClient{
                         case 1:
                             if(game.getNShip(room.getId(),username)<6){
                                 clearScreen();
-                                printMap(game.getBattlefield(room.getId(),username));
+                                printMyMap(game.getBattlefield(room.getId(),username));
                                 System.out.println("Insert coordinates for 2x2 ship");
                                 char yCoordChar = scanner.next().charAt(0);
                                 int yCoord = toNumber(yCoordChar);
@@ -57,7 +57,7 @@ public class GameClient{
                         case 2:
                             clearScreen();
                             System.out.println();
-                            printMap(game.getBattlefield(room.getId(),username));
+                            printMyMap(game.getBattlefield(room.getId(),username));
                             System.out.println();
                             break;
                         case 3:
@@ -71,15 +71,20 @@ public class GameClient{
                     switch(choice){
                         case 1:
                             clearScreen();
-                            System.out.println(game.getOpponentUsername(room.getId(),username)+"\n");
-                            printMap(game.getBattlefield(room.getId(),game.getOpponentUsername(room.getId(),username)));
+                            System.out.println(game.getOpponentPlayer(room.getId(),username).getName()+"\n");
+                            printOpponentMap(game.getOpponentPlayer(room.getId(),username));
                             System.out.println("\n======================================\n"+username+"\n");
-                            printMap(game.getBattlefield(room.getId(),username));
+                            printMyMap(game.getBattlefield(room.getId(),username));
                             break;
                         case 2:
                             clearScreen();
                             if(game.getTurn(room.getId()).contains(username)){
-                                //Logica attacco
+                                System.out.println("Insert coordinates for 2x2 ship");
+                                char yCoordChar = scanner.next().charAt(0);
+                                int yCoord = toNumber(yCoordChar);
+                                int xCoord = scanner.nextInt();
+                                game.attack(room.getId(), username, xCoord, yCoord);
+                                break;
                             }else{
                                 System.out.println("Not your turn.");
                                 break;
@@ -99,48 +104,6 @@ public class GameClient{
         
     }
 
-    /*
-    static boolean insertShip(int x, int y, Ship ship){
-        if(checkCoord(x,y)){
-            if(checkShipBattlefield(x,y,ship)){
-                for(int i=x-1;i<ship.height+x-1;i++){
-                    for(int j=y-1;j<ship.width+y-1;j++){
-                        map.matrix[i][j]="X";
-                    }
-                }
-                System.out.println("Ship inserted!");
-                return true;
-            } else {
-                System.out.println("Another ship already placed here");
-                return false;
-            }
-        } else {
-            System.out.println("Wrong coordinates! Please enter coordinates from a-j and from 1-10");
-            return false;
-        }
-        
-    }
-    
-    static boolean checkCoord(int x, int y){
-        if(x>10 || y>10){
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    static boolean checkShipBattlefield(int x, int y, Ship ship){
-        for(int i=x-1;i<ship.height+x-1;i++){
-            for(int j=y-1;j<ship.width+y-1;j++){
-                if(x>=map.height || y>=map.width || map.matrix[i][j].contains("X")){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    */
-
     static void clearScreen() {  
         System.out.print("\033[H\033[2J");  
         System.out.flush();  
@@ -150,7 +113,7 @@ public class GameClient{
         return (chr - 96);
     }
 
-    static void printMap(Battlefield map){
+    static void printMyMap(Battlefield map){
         System.out.println("    a  b  c  d  e  f  g  h  i  j");
         for(int i=0;i<map.height;i++){
             if(i<9){
@@ -160,6 +123,29 @@ public class GameClient{
             }
             for(int j=0;j<map.width;j++){
                 System.out.print("[" + map.matrix[i][j] + "]");
+            }
+            System.out.println();
+        }
+    }
+
+    static void printOpponentMap(Player opponent){
+        System.out.println("    a  b  c  d  e  f  g  h  i  j");
+        for(int i=0;i<opponent.getMap().height;i++){
+            if(i<9){
+                System.out.print((i+1)+"  ");
+            }else{
+            System.out.print((i+1)+" ");
+            }
+            for(int j=0;j<opponent.getMap().width;j++){
+                if(opponent.hits[i][j]==1){
+                    System.out.print("[O]");
+                }else if(opponent.hits[i][j]==2){
+                    System.out.print("[X]");
+                }else if(opponent.hits[i][j]==-1){
+                    System.out.print("[-]");
+                }else{
+                    System.out.print("[ ]");
+                }
             }
             System.out.println();
         }

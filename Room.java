@@ -41,6 +41,11 @@ public class Room implements Serializable {
         return;
     }
 
+    public void endRoom(){
+        this.end = true;
+        return;
+    }
+
     public void nextTurn(){
         if(this.p[0].getName().contains(this.turn)){
             this.turn = this.p[1].getName();
