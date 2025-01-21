@@ -76,7 +76,7 @@ public class Player implements Serializable {
     }
 
     // Function to mark the hit in the battlefield
-    public int markHit(int x, int y) { 
+    public void markHit(int x, int y) { 
         // If there is a ship in the position, mark the hit with 1, if not, mark with -1
         if(map.matrix[x][y].contains("X")){ 
             this.hits[x][y] = 1; 
