@@ -60,12 +60,12 @@ public class GameClient{
                             if(game.getNShip(room.getId(),username)<6){
                                 clearScreen();
                                 printMyMap(game.getBattlefield(room.getId(),username));
-                                System.out.println("Insert coordinates for 2x2 ship");
+                                System.out.println("Insert coordinates for "+game.getNextShip(room.getId(),username).width+"x"+game.getNextShip(room.getId(),username).height+" ship");
                                 // Get letteral coordinate and convert it to number
                                 char yCoordChar = scanner.next().charAt(0);
                                 int yCoord = toNumber(yCoordChar);
                                 int xCoord = scanner.nextInt();
-                                game.insertShip(room.getId(), username, xCoord, yCoord, new Ship(2,2));
+                                game.insertShip(room.getId(), username, xCoord, yCoord);
                             }else{
                                 clearScreen();
                                 System.out.println("No more ship available");

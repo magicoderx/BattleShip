@@ -17,7 +17,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public Room createRoom(String username) throws RemoteException {
         // Create a new room with the current time as id
         Room room = new Room(System.currentTimeMillis());
-        Player player = new Player(username, 10,2);
+        Player player = new Player(username, 10);
         room.addPlayer(player);
         rooms.put(room.getId(), room);
         System.out.println("Created room with ID: "+room.getId());
@@ -35,7 +35,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
                 System.out.println(username+" joined game in "+roomId);
                 return room;
             }
-            Player player = new Player(username, 10,2);
+            Player player = new Player(username, 10);
             room.addPlayer(player);
             System.out.println(username+" joined game in "+roomId);
         }
@@ -49,18 +49,24 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
         return room.getPlayer(username).getMap();
     }
 
+    //Public function to get next player ship to insert
+    @Override
+    public Ship getNextShip(long roomId, String username) throws RemoteException {
+        Room room = rooms.get(roomId);
+        return room.getPlayer(username).getShip();
+    }
+
     // RMI function to insert a ship into the battlefield of a player
     @Override
-    public void insertShip(long roomId, String username, int x, int y, Ship ship) throws RemoteException {
+    public void insertShip(long roomId, String username, int x, int y) throws RemoteException {
         Room room = rooms.get(roomId);
         if (room != null) {
             Player player = room.getPlayer(username);
-            //TODO change this to allow more than 2 ships
-            // If the player placed less than 2 ships, insert the ship
-            if (player != null && !room.isGameStarted() && player.getNShips()<2) {
-                player.insertShip(x, y, ship);
-                // If both players placed 2 ships, begin the match
-                if(room.getNPlayers() == 2 && room.p[0].getNShips() == 2 && room.p[1].getNShips() == 2){
+            // If the player placed less than 5 ships, insert the ship
+            if (player != null && !room.isGameStarted() && player.getNShips()<5) {
+                player.insertShip(x, y);
+                // If both players placed 5 ships, begin the match
+                if(room.getNPlayers() == 2 && room.p[0].getNShips() == 5 && room.p[1].getNShips() == 5){
                     room.beginRoom();
                 }
             }

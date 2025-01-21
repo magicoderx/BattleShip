@@ -5,18 +5,21 @@ public class Player implements Serializable {
     private String name;
     private Ship[] ships;
     private int nShip;
-    private boolean ready;
     private Battlefield map;
     // Initialize public variables for player's hits
     public int[][] hits;
 
     // Class constructor, initialize player putting 0s in hits map 
-    public Player(String name, int gridSize, int nShips) {
+    public Player(String name, int gridSize) {
         this.name = name;
         this.map = new Battlefield();
-        this.ships = new Ship[nShips];
+        this.ships = new Ship[5];
+        this.ships[0] = new Ship(5,2);
+        this.ships[1] = new Ship(4,1);
+        this.ships[2] = new Ship(2,1);
+        this.ships[3] = new Ship(1,1);
+        this.ships[4] = new Ship(1,1);
         this.nShip=0;
-        this.ready = false;
         this.hits = new int[gridSize][gridSize];
         for(int i=0;i<gridSize;i++){
             for(int j=0;j<gridSize;j++){
@@ -26,20 +29,18 @@ public class Player implements Serializable {
     }
 
     // Function to insert ship into the battlefield
-    public boolean insertShip(int x, int y, Ship ship){
+    public boolean insertShip(int x, int y){
         if(checkCoord(x,y)){
-            if(checkShipBattlefield(x,y,ship)){
+            if(checkShipBattlefield(x,y,this.ships[this.nShip])){
                 // If right value of coordinates, insert ship into the battlefield placing a X in the matrix
-                for(int i=x-1;i<ship.height+x-1;i++){
-                    for(int j=y-1;j<ship.width+y-1;j++){
+                for(int i=x-1;i<this.ships[this.nShip].height+x-1;i++){
+                    for(int j=y-1;j<this.ships[this.nShip].width+y-1;j++){
                         map.matrix[i][j]="X";
                     }
                 }
-                // Set ship coordinates and add ship to the array of ships
-                this.ships[nShip]=ship;
                 // Decrease 1 to x and y to match the matrix indexes
-                this.ships[nShip].xCoord=x-1;
-                this.ships[nShip].yCoord=y-1;
+                this.ships[this.nShip].xCoord=x-1;
+                this.ships[this.nShip].yCoord=y-1;
                 this.nShip++;
                 return true;
             } else {
@@ -57,7 +58,7 @@ public class Player implements Serializable {
         for(int i=x-1;i<ship.height+x-1;i++){
             for(int j=y-1;j<ship.width+y-1;j++){
                 // If the position is already occupied, return false
-                if(map.matrix[i][j].contains("X")){
+                if(if j>=map.width || x>= map.height || map.matrix[i][j].contains("X")){
                     return false;
                 }
             }
@@ -111,6 +112,11 @@ public class Player implements Serializable {
     // Public function to get the number of dhips of the player
     public int getNShips(){
         return this.nShip;
+    }
+
+    // Public function to get the player's ship
+    public Ship getShip(){
+        return this.ships[this.nShip];
     }
 
     // Public function to get the player's battlefield
