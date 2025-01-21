@@ -73,9 +73,9 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
         return 0;
     }
 
-    // RMI function to attack a position in the battlefield of the opponent
+    // RMI function to attack a ship in the battlefield of the opponent. It is String because it returns a message
     @Override
-    public void attack(long roomId, String username, int x, int y) throws RemoteException {
+    public String attack(long roomId, String username, int x, int y) throws RemoteException {
         Room room = rooms.get(roomId);
         if (room != null && room.isGameStarted()) {
             if (room.getTurn().equals(username)) {
@@ -85,21 +85,25 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
                     opponent.markHit(x-1, y-1);
                     // If opponent has no ships, the player wins
                     if(opponent.getNShips()==0){
-                        System.out.println("Game over! "+username+" wins!");
                         room.endRoom();
+                        return "Game over! "+username+" wins!";
                     }else{
                         // Otherwise, change the turn only if the player doesn't hit a ship
-                        if(opponent.hits[x-1][y-1]>0){
-                            return;
+                        if(opponent.hits[x-1][y-1]==1){
+                            return "Hit!";
+                        }else if(opponent.hits[x-1][y-1]==2){
+                            return "Ship Destroyed!";
                         }else{
                             room.nextTurn();
+                            return "Miss!";
                         }
                     }
                 }
             }else{
-                System.out.println("Not your turn");
+                return "Not your turn";
             }
         }
+        return "Error";
     }
 
     // RMI function to get the opponent player

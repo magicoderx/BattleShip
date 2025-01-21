@@ -56,8 +56,8 @@ public class Player implements Serializable {
     private boolean checkShipBattlefield(int x, int y, Ship ship){
         for(int i=x-1;i<ship.height+x-1;i++){
             for(int j=y-1;j<ship.width+y-1;j++){
-                // If x or y are greater than the battlefield size or if the position is already occupied, return false
-                if(x>=map.height || y>=map.width || map.matrix[i][j].contains("X")){
+                // If the position is already occupied, return false
+                if(map.matrix[i][j].contains("X")){
                     return false;
                 }
             }
@@ -65,10 +65,9 @@ public class Player implements Serializable {
         return true;
     }
 
-    // TODO merge this function with the above one
     // Function to check if the coordinates are right
     private boolean checkCoord(int x, int y){
-        if(x>10 || y>10){
+        if(x>map.height || y>map.width){
             return false;
         } else {
             return true;

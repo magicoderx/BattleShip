@@ -19,27 +19,34 @@ public class GameClient{
             System.out.println("Enter your username: ");
             String username = scanner.nextLine();
 
-            // Ask player to create or join a room
-            System.out.println("[1] Create a room\n[2] Join a room");
-            int choice = scanner.nextInt();
-
-            //TODO Error management
-            switch(choice){
-                // If player chooses to create a room, create a room and print the room ID
-                case 1:
-                    room = game.createRoom(username);
-                    clearScreen();
-                    System.out.println("Room created with ID: " + room.getId());
-                    break;
-                // Otherwise, ask player for the room ID and join the room
-                case 2:
-                    System.out.print("Enter room ID: ");
-                    long roomId = scanner.nextLong();
-                    room = game.joinRoom(roomId, username);
-                    clearScreen();
-                    System.out.println("Joined room: " + room.getId());
-                    break;
-            }
+            int choice;
+            do{
+                // Ask player to create or join a room
+                System.out.println("[1] Create a room\n[2] Join a room");
+                choice = scanner.nextInt();
+                switch(choice){
+                    // If player chooses to create a room, create a room and print the room ID
+                    case 1:
+                        room = game.createRoom(username);
+                        clearScreen();
+                        System.out.println("Room created with ID: " + room.getId());
+                        break;
+                    // Otherwise, ask player for the room ID and join the room
+                    case 2:
+                        System.out.print("Enter room ID: ");
+                        long roomId = scanner.nextLong();
+                        room = game.joinRoom(roomId, username);
+                        clearScreen();
+                        System.out.println("Joined room: " + room.getId());
+                        break;
+                    // Manage invalid choices
+                    default:
+                        clearScreen();
+                        System.out.println("Invalid choice");
+                        break;
+                }
+            }while(choice!=1 && choice!=2);
+            
             // Begin loop until the room is null (game is finished)
             do{
                 // If the game is not started yet, ask player to insert a ship, show the map or check the game status
@@ -75,6 +82,11 @@ public class GameClient{
                         case 3:
                             clearScreen();
                             break;
+                        // Manage invalid choices
+                        default:
+                            clearScreen();
+                            System.out.println("Invalid choice");
+                            break;
                     }
                 // If the game is started, ask player to show the maps, attack or get the turn
                 }else if(room!=null && game.gameStarted(room.getId())){
@@ -94,11 +106,15 @@ public class GameClient{
                         case 2:
                             clearScreen();
                             if(game.getTurn(room.getId()).contains(username)){
-                                System.out.println("Insert coordinates for 2x2 ship");
+                                printOpponentMap(game.getOpponentPlayer(room.getId(),username));
+                                System.out.println("Insert coordinates for opponent ship");
                                 char yCoordChar = scanner.next().charAt(0);
                                 int yCoord = toNumber(yCoordChar);
                                 int xCoord = scanner.nextInt();
-                                game.attack(room.getId(), username, xCoord, yCoord);
+                                // Print again the opponent's map with the hit result
+                                clearScreen();
+                                System.out.println(game.attack(room.getId(), username, xCoord, yCoord)+"\n");
+                                printOpponentMap(game.getOpponentPlayer(room.getId(),username));
                                 break;
                             }else{
                                 System.out.println("Not your turn.");
@@ -106,7 +122,13 @@ public class GameClient{
                             }
                         // Otherwise, get the turn of the player
                         case 3:
-                            System.out.println(game.getTurn(room.getId())+"\'s turn.");
+                            clearScreen();
+                            System.out.println(game.getTurn(room.getId())+"\'s turn.\n");
+                            break;
+                        // Manage invalid choices
+                        default:
+                            clearScreen();
+                            System.out.println("Invalid choice");
                             break;
                     }
                 }else{

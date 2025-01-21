@@ -8,7 +8,7 @@ public interface GameInterface extends Remote {
     void insertShip(long roomId, String username, int x, int y, Ship ship) throws RemoteException;
     Player getOpponentPlayer(long roomId, String username) throws RemoteException;
     Battlefield getBattlefield(long roomId, String username) throws RemoteException;
-    void attack(long roomId, String username, int x, int y) throws RemoteException;
+    String attack(long roomId, String username, int x, int y) throws RemoteException;
     String getTurn(long roomId) throws RemoteException;
     boolean gameStarted(long roomId) throws RemoteException;
 }
