@@ -67,7 +67,7 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
                 player.insertShip(x, y);
                 // If both players placed 5 ships, begin the match
                 if(room.getNPlayers() == 2 && room.p[0].getNShips() == 5 && room.p[1].getNShips() == 5){
-                    room.beginRoom();
+                       room.beginRoom();
                 }
             }
         }
@@ -76,7 +76,8 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     // RMI function to get the number of ships of a player
     @Override
     public int getNShip(long roomId, String username) throws RemoteException{
-        return 0;
+        Room room = rooms.get(roomId);
+        return room.getPlayer(username).getNShips();
     }
 
     // RMI function to attack a ship in the battlefield of the opponent. It is String because it returns a message
@@ -131,6 +132,13 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public boolean gameStarted(long roomId) throws RemoteException {
         Room room = rooms.get(roomId);
         return (room != null) && room.isGameStarted();
+    }
+
+    // RMI function to check if the game is finished
+    @Override
+    public boolean gameFinished(long roomId) throws RemoteException {
+        Room room = rooms.get(roomId);
+        return (room != null) && room.isGameFinished();
     }
 
     public static void main(String[] args) {

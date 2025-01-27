@@ -68,6 +68,11 @@ public class Room implements Serializable {
         return this.begin;
     }
 
+    // Public function to check if the game is finished
+    public boolean isGameFinished(){
+        return this.end;
+    }
+
     // Public function to check if the game is starded
     public String getTurn(){
         return this.turn;

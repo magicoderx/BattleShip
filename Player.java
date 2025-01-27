@@ -58,7 +58,7 @@ public class Player implements Serializable {
         for(int i=x-1;i<ship.height+x-1;i++){
             for(int j=y-1;j<ship.width+y-1;j++){
                 // If the position is already occupied, return false
-                if(if j>=map.width || x>= map.height || map.matrix[i][j].contains("X")){
+                if(j>=map.width || x>= map.height || map.matrix[i][j].contains("X")){
                     return false;
                 }
             }

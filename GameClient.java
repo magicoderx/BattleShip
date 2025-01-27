@@ -1,4 +1,5 @@
 import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 
@@ -57,7 +58,7 @@ public class GameClient{
                     switch(choice){
                         // If player chooses to insert a ship, ask for the coordinates and insert the ship
                         case 1:
-                            if(game.getNShip(room.getId(),username)<6){
+                            if(game.getNShip(room.getId(),username)<5){
                                 clearScreen();
                                 printMyMap(game.getBattlefield(room.getId(),username));
                                 System.out.println("Insert coordinates for "+game.getNextShip(room.getId(),username).width+"x"+game.getNextShip(room.getId(),username).height+" ship");
@@ -89,7 +90,7 @@ public class GameClient{
                             break;
                     }
                 // If the game is started, ask player to show the maps, attack or get the turn
-                }else if(room!=null && game.gameStarted(room.getId())){
+                }else if(room!=null && game.gameStarted(room.getId()) && !game.gameFinished(room.getId())){
                     System.out.println("Game started.");
                     System.out.println("[1] Show maps\n[2] Attack\n[3] Get turn");
                     choice = scanner.nextInt();
@@ -133,6 +134,7 @@ public class GameClient{
                     }
                 }else{
                     System.out.println("Game finished");
+                    room=null;
                 }
             }while(room!=null);
             return;
