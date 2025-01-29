@@ -1,0 +1,103 @@
+@startuml
+interface GameInterface <<Remote>> {
+    + createRoom(username: String) throws RemoteException
+    + joinRoom(roomId: long, username: String) throws RemoteException
+    + getNShip(roomId: long, username: String) throws RemoteException
+    + insertShip(roomId: long, username: String, x: int, y: int) throws RemoteException
+    + getOpponentPlayer(roomId: long, username: String) throws RemoteException
+    + getBattlefield(roomId: long, username: String) throws RemoteException
+    + attack(roomId: long, username: String, x: int, y: int) throws RemoteException
+    + getTurn(roomId: long) throws RemoteException
+    + gameStarted(roomId: long) throws RemoteException
+    + gameFinished(roomId: long) throws RemoteException
+    + getNextShip(roomId: long, username: String) throws RemoteException
+}
+
+class GameServer <<UnicastRemoteObject>> {
+    - registry: Registry
+    - rooms: Map<Long, Room>
+    + startServer()
+    + bindToRegistry()
+    + createRoom(username: String)
+    + joinRoom(roomId: long, username: String)
+    + getNShip(roomId: long, username: String)
+    + insertShip(roomId: long, username: String, x: int, y: int)
+    + getOpponentPlayer(roomId: long, username: String)
+    + getBattlefield(roomId: long, username: String)
+    + attack(roomId: long, username: String, x: int, y: int)
+    + getTurn(roomId: long)
+    + gameStarted(roomId: long)
+    + gameFinished(roomId: long)
+    + getNextShip(roomId: long, username: String)
+}
+
+class GameClient {
+    - game: GameInterface
+    + startClient()
+    + connectToServer()
+    + clearScreen(): void
+    + toNumber(): int
+    + printMyMap(map: Battlefield): void
+    + printOpponentMap(opponent: Player): void
+}
+
+class Battlefield {
+    - height: int
+    - width: int
+    - matrix: String[][]
+    + print(): void
+}
+
+class Room {
+    - id: long
+    - len: int
+    - begin: boolean
+    - end: boolean
+    - turn: String
+    - players: Player[]
+    + addPlayer(player: Player): void
+    + beginRoom(): void
+    + endRoom(): void
+    + nextTurn(): void
+    + isGameStarted(): boolean
+    + isGameFinished(): boolean
+    + getId(): long
+    + getTurn(): String
+    + getPlayer(username: String): Player
+    + getOpponent(username: String): Player
+    + getNPlayers(): int
+}
+
+class Ship {
+    - height: int
+    - width: int
+    - xCoord: int
+    - yCoord: int
+    - destroyed: boolean
+    - hits: int
+}
+
+class Player {
+    - name: String
+    - ships: Ship[]
+    - nShip: int
+    - map: Battlefield
+    - hits: int[][]
+    + insertShip(x: int, y: int): boolean
+    + checkShipBattlefield(x: int, y: int, ship: Ship): boolean
+    + checkCoord(x: int, y: int): boolean
+    + markHit(x: int, y: int): void
+    + getName(): String
+    + getNShips(): int
+    + getShip(): Ship
+    + getMap(): Battlefield
+}
+
+GameServer ..|> GameInterface
+GameClient --> GameInterface
+GameClient --> Room
+GameServer --> Room
+Room --> Player
+Player --> Battlefield
+Player --> Ship
+@enduml
