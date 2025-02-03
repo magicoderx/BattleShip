@@ -58,19 +58,25 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
 
     // RMI function to insert a ship into the battlefield of a player
     @Override
-    public void insertShip(long roomId, String username, int x, int y) throws RemoteException {
+    public String insertShip(long roomId, String username, int x, int y) throws RemoteException {
         Room room = rooms.get(roomId);
         if (room != null) {
             Player player = room.getPlayer(username);
             // If the player placed less than 5 ships, insert the ship
             if (player != null && !room.isGameStarted() && player.getNShips()<5) {
-                player.insertShip(x, y);
-                // If both players placed 5 ships, begin the match
-                if(room.getNPlayers() == 2 && room.p[0].getNShips() == 5 && room.p[1].getNShips() == 5){
-                       room.beginRoom();
+                if(player.insertShip(x, y)){
+                    // If both players placed 5 ships, begin the match
+                    if(room.getNPlayers() == 2 && room.p[0].getNShips() == 5 && room.p[1].getNShips() == 5){
+                        room.beginRoom();
+                        return "Ship inserted successfully. Game started!";
+                    }
+                    return "Ship inserted successfully";
+                }else{
+                    return "Error. Another ship already placed here or exceeded the coordinates";
                 }
             }
         }
+        return "Error. Room not found.";
     }
 
     // RMI function to get the number of ships of a player
