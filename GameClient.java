@@ -45,7 +45,7 @@ public class GameClient{
                             clearScreen();
                             System.out.println("Joined room: " + room.getId());
                         }catch(RemoteException e){
-                            System.out.println("Error joining room");
+                            System.out.println(e.getMessage());
                         }
                         break;
                     // Manage invalid choices
@@ -178,10 +178,14 @@ public class GameClient{
                                 System.out.println("Invalid choice");
                                 break;
                         }
-                    }else{
+                    }else if(game.gameFinished(room.getId())){
                         // If game is finished but I'm still in the loop, print the winner and set room to null
-                        System.out.println("Game finished, "+game.getOpponentPlayer(room.getId(),username).getName()+" wins!");
+                        System.out.println("Game finished, "+game.getWinner(room.getId()).getName()+" wins!");
                         room=null;
+                    }else{
+                        // If room is null, break the loop
+                        System.out.println("Try to rerun the program and join into an available room.");
+                        break;
                     }
                 }catch(RemoteException e){
                     System.out.println("Error commnicating with server");

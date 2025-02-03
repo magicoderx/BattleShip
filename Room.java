@@ -102,6 +102,15 @@ public class Room implements Serializable {
         return null;
     }
 
+    // Public function to get winner of the game
+    public Player getWinnerRoom(){
+        if(this.p[0].getNShips()==0){
+            return this.p[1];
+        }else{
+            return this.p[0];
+        }
+    }
+
     // Public function to get number of playrs in the room
     public int getNPlayers(){
         return this.len;

@@ -13,4 +13,5 @@ public interface GameInterface extends Remote {
     boolean gameStarted(long roomId) throws RemoteException;
     boolean gameFinished(long roomId) throws RemoteException;
     Ship getNextShip(long roomId, String username) throws RemoteException;
+    Player getWinner(long roomId) throws RemoteException;
 }

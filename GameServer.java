@@ -30,14 +30,19 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public Room joinRoom(long roomId, String username) throws RemoteException {
         Room room = rooms.get(roomId);
         if (room != null) {
-            // If the player is already in the room, return the room
-            if (room.getPlayer(username)!=null){
+            // If there are two players in the room, and one of them is not the current player, return an error because the room is full
+            if(room.getPlayer(username)==null && room.getNPlayers()==2){
+                throw new RemoteException("Room not found or full try again");
+            } else if (room.getPlayer(username)!=null){
+                // If the player is already in the room, return the room
                 System.out.println(username+" joined game in "+roomId);
                 return room;
             }
             Player player = new Player(username, 10);
             room.addPlayer(player);
             System.out.println(username+" joined game in "+roomId);
+        }else{
+            
         }
         return room;
     }
@@ -95,21 +100,25 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
                 Player opponent = room.getOpponent(username);
                 if (opponent != null) {
                     // Mark the hit in the opponent battlefield with the coordinates decreased by 1 because the battlefield is 0-indexed
-                    opponent.markHit(x-1, y-1);
-                    // If opponent has no ships, the player wins
-                    if(opponent.getNShips()==0){
-                        room.endRoom();
-                        return "Game over! "+username+" wins!";
-                    }else{
-                        // Otherwise, change the turn only if the player doesn't hit a ship
-                        if(opponent.hits[x-1][y-1]==1){
-                            return "Hit!";
-                        }else if(opponent.hits[x-1][y-1]==2){
-                            return "Ship Destroyed!";
+                    if(opponent.markHit(x-1, y-1)){
+                        // If opponent has no ships, the player wins
+                        if(opponent.getNShips()==0){
+                            room.endRoom();
+                            return "Game over! "+username+" wins!";
                         }else{
-                            room.nextTurn();
-                            return "Miss!";
+                            // Otherwise, change the turn only if the player doesn't hit a ship
+                            if(opponent.hits[x-1][y-1]==1){
+                                return "Hit!";
+                            }else if(opponent.hits[x-1][y-1]==2){
+                                return "Ship Destroyed!";
+                            }else{
+                                room.nextTurn();
+                                return "Miss!";
+                            }
                         }
+                    // If markHit returns false, the player already hit this position
+                    }else{
+                        return "You already hit this position!";
                     }
                 }
             }else{
@@ -145,6 +154,13 @@ public class GameServer extends UnicastRemoteObject implements GameInterface {
     public boolean gameFinished(long roomId) throws RemoteException {
         Room room = rooms.get(roomId);
         return (room != null) && room.isGameFinished();
+    }
+
+    // RMI function to get the winner of the game
+    @Override
+    public Player getWinner(long roomId) throws RemoteException {
+        Room room = rooms.get(roomId);
+        return room.getWinnerRoom();
     }
 
     public static void main(String[] args) {

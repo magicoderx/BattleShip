@@ -35,7 +35,7 @@ public class Player implements Serializable {
                 // If right value of coordinates, insert ship into the battlefield placing a X in the matrix
                 for(int i=x-1;i<this.ships[this.nShip].height+x-1;i++){
                     for(int j=y-1;j<this.ships[this.nShip].width+y-1;j++){
-                        map.matrix[i][j]="X";
+                        this.map.matrix[i][j]="X";
                     }
                 }
                 // Decrease 1 to x and y to match the matrix indexes
@@ -57,7 +57,7 @@ public class Player implements Serializable {
         for(int i=x-1;i<ship.height+x-1;i++){
             for(int j=y-1;j<ship.width+y-1;j++){
                 // If the position is already occupied, return false
-                if(j>map.width-1 || i> map.height-1 || map.matrix[i][j].contains("X")){
+                if(j>this.map.width-1 || i> this.map.height-1 || this.map.matrix[i][j].contains("X")){
                     return false;
                 }
             }
@@ -67,7 +67,7 @@ public class Player implements Serializable {
 
     // Function to check if the coordinates are right
     private boolean checkCoord(int x, int y){
-        if(x>map.height || y>map.width){
+        if(x>this.map.height || y>this.map.width){
             return false;
         } else {
             return true;
@@ -75,9 +75,13 @@ public class Player implements Serializable {
     }
 
     // Function to mark the hit in the battlefield
-    public void markHit(int x, int y) { 
-        // If there is a ship in the position, mark the hit with 1, if not, mark with -1
-        if(map.matrix[x][y].contains("X")){ 
+    public boolean markHit(int x, int y) { 
+        // Check if the position was already hit
+        if(this.hits[x][y] != 0){
+            System.out.println("You already hit this position!");
+            return false;
+        }else if(this.map.matrix[x][y].contains("X")){ 
+            // If there is a ship in the position, mark the hit with 1, if not, mark with -1
             this.hits[x][y] = 1; 
             // Cycle for every ship in the array and increase the hits variable of the ship
             for(int i=0;i<this.ships.length;i++){
@@ -98,8 +102,10 @@ public class Player implements Serializable {
                     }
                 }
             }
+            return true;
         } else { 
             this.hits[x][y] = -1; 
+            return true;
         }
     }
 
