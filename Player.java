@@ -44,7 +44,6 @@ public class Player implements Serializable {
                 this.nShip++;
                 return true;
             } else {
-                System.out.println("x: "+x+"   y: "+y+" Another ship already placed here");
                 return false;
             }
         } else {

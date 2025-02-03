@@ -85,7 +85,6 @@ public class GameClient{
                                             System.out.println(e.getMessage());
                                             break;
                                         }
-                                        System.out.println("xCoord: "+xCoord+" yCoord: "+yCoord);
                                         clearScreen();
                                         System.out.println(game.insertShip(room.getId(), username, xCoord, yCoord));
                                     }else{
